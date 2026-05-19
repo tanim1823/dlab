@@ -1,0 +1,33 @@
+clc;
+clear all;
+close all;
+
+% ============================================
+% Question 3: Computing Circular Convolution
+% Inputs: x1(n) = [1,1,2,2] & x2(n) = [1,2,3,4]
+% ============================================
+
+x = [1, 2, 3, 4];
+h = [1, 2, 1, 2];
+
+m = length(x);
+n = length(h);
+N = max(m, n);
+
+x = [x, zeros(1, N - m)];
+h = [h, zeros(1, N - n)];
+
+z = zeros(1, N);
+for n_idx = 1:N
+    for i = 1:N
+        j = mod(n_idx - i, N);
+        if (j < 0)
+            j = j + N;
+        end
+        z(n_idx) = z(n_idx) + x(i) * h(j + 1);
+    end
+end
+
+subplot(3,1,1); stem(x, 'filled'); title('Signal 1 (x)');
+subplot(3,1,2); stem(h, 'filled'); title('Signal 2 (h)');
+subplot(3,1,3); stem(z, 'filled'); title('Circular Convolution Output (z)');

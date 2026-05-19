@@ -1,0 +1,56 @@
+clc;
+clear all;
+close all;
+
+% ============================================
+% Question 5: Computing Decimation in Frequency FFT (DIFFT)
+% Inputs: x(n) = 2^n and N = 8
+% ============================================
+
+% ইউজার ইনপুট বাদ দিয়ে সরাসরি ফিক্সড ৮টি সংখ্যা দেওয়া হলো (টেস্ট করার জন্য)
+x = [1, 2, 3, 4, 4, 3, 2, 1];
+L_len = length(x);
+
+% Radix-2 এর জন্য পরবর্তী 2^k দৈর্ঘ্য বের করা
+next_pow = ceil(log2(L_len));
+n = 2^next_pow;
+
+% জিরো প্যাডিং
+x11 = [x, zeros(1, n - L_len)];
+
+y = zeros(1, n);
+x1 = zeros(1, n/2);
+x2 = zeros(1, n/2);
+
+% ভাগের অংশ
+for j = 1:(n/2)
+    x1(j) = x11(j);
+end
+
+for j = ((n/2)+1):n
+    x2(j - (n/2)) = x11(j);
+end
+
+% DIF FFT ক্যালকুলেশন
+for k = 1:n
+    for j = 1:(n/2)
+        y(k) = y(k) + (x1(j) + exp(-1i * pi * (k - 1)) * x2(j)) * exp(-2 * pi * 1i * (j - 1) * (k - 1) / n);
+    end
+end
+
+% গ্রাফ প্লট করা
+figure(1);
+
+subplot(2,1,1);
+stem(x, 'filled');
+xlabel('Samples');
+ylabel('Amplitude');
+title('Input Sequence');
+grid on;
+
+subplot(2,1,2);
+stem(abs(y), 'filled');
+xlabel('Samples');
+ylabel('Amplitude');
+title('DIFFT Output - Magnitude');
+grid on;
